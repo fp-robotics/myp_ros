@@ -1,0 +1,5 @@
+string phrase
+string language
+string gender
+---
+string message

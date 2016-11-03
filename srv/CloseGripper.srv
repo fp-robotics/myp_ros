@@ -1,0 +1,5 @@
+float64 velocity
+float64 acceleration
+float64 current
+---
+string message

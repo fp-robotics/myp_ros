@@ -1,0 +1,9 @@
+string[] actuator_ids
+int32 position
+int32 velocity
+int32 acceleration
+int32 jerk
+bool not_block
+bool relative
+---
+bool success

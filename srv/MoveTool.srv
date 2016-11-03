@@ -1,0 +1,11 @@
+float64 x
+float64 y
+float64 z
+float64[] orientation
+float64[] velocity #optional
+float64[] acceleration #optional
+bool not_block #optional
+bool relative #optional
+string frame #optional
+---
+string message

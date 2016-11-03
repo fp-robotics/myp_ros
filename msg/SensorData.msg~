@@ -1,0 +1,6 @@
+time stamp
+string name
+float64 data
+float64 data_percent
+bool readable
+
