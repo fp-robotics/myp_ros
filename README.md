@@ -2,7 +2,7 @@
 ### Building
 If you do not already have a catkin workspace set up please set one up according to this tutorial http://wiki.ros.org/catkin/Tutorials/create_a_workspace.
 
-Place the *client_pkg* directory in the source folder of your catkin workspace and buildby calling either *catkin_make* or *catkin build* . To use this package in a terminal shell, you must first run:
+Place the *myp_ros* directory in the source folder of your catkin workspace and buildby calling either *catkin_make* or *catkin build* . To use this package in a terminal shell, you must first run:
 ```sh
 $ source PATH_TO_CATKIN_WS/devel/setup.bash
 ```
@@ -30,4 +30,10 @@ You should see a list of services. To open up all channels of communication over
 
 The first parameter must be a string, either 'real' or 'no_robot' depending on whether you want, the second is a string detailing your robot model, e.g 'PRob2R', the third parameter, also a string, determines the calibration type, which should always be 'default'.
 
-To see each of the services provided and their parameters, look under in the *client_pkg/srv* directory. To see a basic example of each service, as well as subscription to each topic, see the node *example.py* located in *client_pkg/scripts*
+To see each of the services provided and their parameters, look under in the *myp_ros/srv* directory. To see a basic example of each service, as well as subscription to each topic, see the node *example.py* located in *myp_ros/scripts*
+
+# Extras
+### Joystick controller
+The node joy_control.py subscribes to the joy topic to allow a user to use a joystick to move the end effector in steps. Inorder to use this functionality, set up your machine to run a joy_node according to the following tutorial http://wiki.ros.org/joy/Tutorials/ConfiguringALinuxJoystick. Remember to export the MyP ROS_MASTER_URI in all your peripheral nodes.
+
+The mapping used for this controller is that of a Sony PS3 Controller, you may need to change the mappings in the node if your controller does not follow the same pattern. The loop rate in the node can be adjusted to you choosing. The reference position updates much faster than the movement commands sent, so with a slower rate you have more time to adjust the desired position before the robot is told to move there.

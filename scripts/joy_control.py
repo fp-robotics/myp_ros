@@ -41,8 +41,8 @@ class JoystickController:
 
 		rospy.Subscriber('joy', Joy, self.callback)
 
-		rospy.loginfo("Started joystick_controller!")
-		rospy.logingo("Use the analog joysticks to control the robot's end effector. \n \
+		rospy.loginfo("\nStarted joystick_controller!")
+		rospy.loginfo("Use the analog joysticks to control the robot's end effector. \n \
 						Use the left joystick to control x-y and the right to control z. \n \
 						Press Triangle (PS3) to increase the joystick scale.\n \
 						Press Circle   (PS3) to decrease the joystick scale.")
