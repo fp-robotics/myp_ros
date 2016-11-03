@@ -1,24 +1,30 @@
 #!/usr/bin/env python
 
+'''
+A node that uses the joystick to control the end effector:
+
+L-LR: 		msg.axes[0]
+L-UD: 		msg.axes[1]
+R-LR: 		msg.axes[2]
+R-UD: 		msg.axes[3]
+
+triangle: 	buttons[12]
+x:		buttons[14]
+'''
+
 import rospy
+from rospy.exceptions import ROSInterruptException
+from rospy import ServiceException
 from sensor_msgs.msg import Joy
-from myp_ros.srv import MoveTool, MoveToolRequest
+from myp_ros.srv import MoveTool, MoveToolRequest, MoveJoint
 from copy import deepcopy
 
-'''
-L-LR: msg.axes[0]
-L-UD: msg.axes[1]
-R-LR: msg.axes[2]
-R-UD: msg.axes[3]
-
-triangle: buttons[12]
-x:		  buttons[14]
-'''
 
 class JoystickController:
 
 	reset_pos = MoveToolRequest(0.0, 0.0, 1137.0, [0, 0, -0], [], [], False, False, '')
 	move_tool = rospy.ServiceProxy('move_tool', MoveTool)
+	move_joint = rospy.ServiceProxy('move_joint', MoveJoint)
 
 	# init ros
 	def __init__(self):
@@ -35,17 +41,17 @@ class JoystickController:
 		rospy.init_node('joystick_controller', anonymous=True)
 
 		self.scale = 1.0
-		
+
+		self.move_joint(actuator_ids=['1', '2', '3', '4', '5', '6'], 
+				   position=[0]*6, velocity = [80]*6, acceleration = [80]*6)
+
 		self.update_pos = MoveToolRequest(0.0, 0.0, 1137.0, [0, 0, -0], [], [], False, False, '')
-		self.last_good = self.update_pos
+		self.last_good = deepcopy(self.update_pos)
 
 		rospy.Subscriber('joy', Joy, self.callback)
 
-		rospy.loginfo("\nStarted joystick_controller!")
-		rospy.loginfo("Use the analog joysticks to control the robot's end effector. \n \
-						Use the left joystick to control x-y and the right to control z. \n \
-						Press Triangle (PS3) to increase the joystick scale.\n \
-						Press Circle   (PS3) to decrease the joystick scale.")
+		rospy.loginfo("Started joystick_controller!")
+		rospy.loginfo("\nUse the analog joysticks to control the robot's end effector. \nUse the left joystick to control x-y and the right to control z. \nPress Triangle (PS3) to increase the joystick scale.\nPress Circle   (PS3) to decrease the joystick scale.")
 
 	# callback for incoming raw joystick data
 	def callback(self, msg):
@@ -90,6 +96,20 @@ class JoystickController:
 			self.last_good = deepcopy(pos)
 		else:
 			self.update_pos = deepcopy(self.last_good)
+			rospy.logwarn(resp.message)
+
+	'''
+	Define a function to return to neutral position to be called on shutdown.
+	In shutdwon ROS services cannot provide the return value so we may use
+	the ServiceException raised by this as the trigger for service completion.
+	'''
+	def move_back(self):
+		rospy.loginfo("Moving back...")
+		try:
+			self.move_joint(actuator_ids=['1', '2', '3', '4', '5', '6'], 
+						position=[0]*6, velocity = [80]*6, acceleration = [80]*6)
+		except ServiceException as exception:
+			rospy.loginfo("Done. Goodbye!")
 
 # publish scaled and filtered data at a rate of 150Hz
 if __name__ == '__main__':
@@ -97,5 +117,11 @@ if __name__ == '__main__':
 
 	rate = rospy.Rate(5)
 	while not rospy.is_shutdown():
-		jc.move_tool_service()
-		rate.sleep()
+
+		try:
+		    jc.move_tool_service()
+		    rate.sleep()
+
+		except ROSInterruptException as error:
+			rospy.loginfo("Movement interrupted by shutdown.")
+			jc.move_back()
