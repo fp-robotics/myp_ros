@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  actionlib_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -82,9 +83,19 @@ add_service_files(
 	WriteDigitalOutputs.srv
 )
 
+
+## Generate actions in the 'action' folder
+add_action_files(
+  FILES
+  MoveToJointReference.action
+  MoveToPoseReference.action
+  MoveToToolReference.action
+ )
+
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
+  actionlib_msgs
   std_msgs  # Or other packages containing msgs
 )
 
@@ -122,7 +133,7 @@ catkin_package(
 #  LIBRARIES client_pkg
 #  CATKIN_DEPENDS roscpp rospy
 #  DEPENDS system_lib
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS message_runtime actionlib_msgs
 )
 
 ###########
