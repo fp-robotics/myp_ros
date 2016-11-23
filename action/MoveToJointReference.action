@@ -1,6 +1,9 @@
 #goal definition
-float64[] joint_reference
-string[] joint_names
+string[] actuator_ids
+float64[] position
+float64[] velocity
+float64[] acceleration
+bool relative
 ---
 #result definition
 float64[] final_joint_error
@@ -9,3 +12,4 @@ bool uninterrupted
 ---
 #feedback
 float64[] joint_error
+
