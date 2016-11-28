@@ -57,7 +57,7 @@ if __name__ == '__main__':
                 val = float(str_num)
 
 								#create the new goal
-                goal = client.new_goal(position=(val, val, val, 0, 0, 0, 0))
+                goal = client.new_goal(position=(val, val, val, 0, 0, 0))
 
 								#send with the appropriate flags
                 client.send_goal(goal, queuing, clear)
