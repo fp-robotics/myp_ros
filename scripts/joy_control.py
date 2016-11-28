@@ -16,15 +16,19 @@ import rospy
 from rospy.exceptions import ROSInterruptException
 from rospy import ServiceException
 from sensor_msgs.msg import Joy
-from myp_ros.srv import MoveTool, MoveToolRequest, MoveJoint
+from myp_ros.srv import MoveTool, MoveToolRequest, MoveJoint, OpenGripper, CloseGripper, PlayPath
 from copy import deepcopy
 
 
 class JoystickController:
 
-	reset_pos = MoveToolRequest(0.0, 0.0, 1137.0, [0, 0, -0], [], [], False, False, '')
+	reset_pos = MoveToolRequest(189.0, 0.0, 1189.5,  [0.0, 0.0, 0.0], [80]*6, [80]*6, False, False, '')
 	move_tool = rospy.ServiceProxy('move_tool', MoveTool)
+	open_gripper = rospy.ServiceProxy('open_gripper', OpenGripper)
+	close_gripper = rospy.ServiceProxy('close_gripper', CloseGripper)
 	move_joint = rospy.ServiceProxy('move_joint', MoveJoint)
+	play_path = rospy.ServiceProxy('play_path', PlayPath)
+
 
 	# init ros
 	def __init__(self):
@@ -37,6 +41,8 @@ class JoystickController:
 		self.triangleWasPressed = 0
 		self.xWasPressed = 0
 		self.reset = False
+		self.squareWasPressed = 0
+		self.circleWasPressed = 0
 
 		rospy.init_node('joystick_controller', anonymous=True)
 
@@ -45,7 +51,7 @@ class JoystickController:
 		self.move_joint(actuator_ids=['1', '2', '3', '4', '5', '6'], 
 				   position=[0]*6, velocity = [80]*6, acceleration = [80]*6)
 
-		self.update_pos = MoveToolRequest(0.0, 0.0, 1137.0, [0, 0, -0], [], [], False, False, '')
+		self.update_pos = 	reset_pos = MoveToolRequest(189.0, 0.0, 1189.5,  [0.0, 0.0, 0.0], [80]*6, [80]*6, False, False, '')
 		self.last_good = deepcopy(self.update_pos)
 
 		rospy.Subscriber('joy', Joy, self.callback)
@@ -56,11 +62,14 @@ class JoystickController:
 	# callback for incoming raw joystick data
 	def callback(self, msg):
 		self.update_pos.x += self.scale*msg.axes[0]
-		self.update_pos.y += self.scale*msg.axes[1]
+		self.update_pos.y += -1*self.scale*msg.axes[1]
 		self.update_pos.z += self.scale*msg.axes[3]
 
 		if (self.selectWasPressed != msg.buttons[0] and self.selectWasPressed == 0):  # select button
 			rospy.loginfo("Select pressed!")
+			resp = self.play_path(path_name='path_name')
+			rospy.loginfo(resp.message)			
+			#self.update_pos = MoveToolRequest(406.0, -292.0, 1059.0, [2.0, 1.0, 30.0], [], [], False, False, '')
 
 		if (self.startWasPressed != msg.buttons[3] and self.startWasPressed == 0):  # start button
 			rospy.loginfo("Start pressed!")
@@ -72,10 +81,22 @@ class JoystickController:
 		if (self.xWasPressed != msg.buttons[14] and self.xWasPressed == 0):
 			self.scale_down()
 
+		if (self.squareWasPressed != msg.buttons[15] and self.squareWasPressed == 0):
+			rospy.loginfo("Open Gripper!")
+			resp = self.open_gripper()
+			rospy.loginfo(resp.message)
+		
+		if (self.circleWasPressed != msg.buttons[13] and self.circleWasPressed == 0):
+			rospy.loginfo("Open Gripper!")
+			resp = self.close_gripper()
+			rospy.loginfo(resp.message)
+
 		self.selectWasPressed = msg.buttons[0]
 		self.startWasPressed = msg.buttons[3]
 		self.triangleWasPressed = msg.buttons[12]
 		self.xWasPressed = msg.buttons[14]
+		self.circleWasPressed = msg.buttons[13]
+		self.squareWasPressed = msg.buttons[15]
 
 
 	def scale_up(self):
@@ -115,7 +136,7 @@ class JoystickController:
 if __name__ == '__main__':
 	jc = JoystickController()
 
-	rate = rospy.Rate(5)
+	rate = rospy.Rate(1)
 	while not rospy.is_shutdown():
 
 		try:
