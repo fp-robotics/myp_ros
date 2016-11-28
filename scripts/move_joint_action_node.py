@@ -2,14 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import rospy, sys
-from user_code import QueuingClient, ActionLibrary
+from myp_actions import QueuingClient
 from myp_ros.srv import ConnectionCommand
 
+PYTHON3 = sys.version_info[0] == 3
+
+if PYTHON3:
+    raw_input = input
+
 if __name__ == '__main__':
-    rospy.init_node('test_node')
-    action_name = 'move_joint'
-    action_class = ActionLibrary.action_classes[action_name]
-    queuing = False
+    rospy.init_node('move_joint_action_node')
 
     try:
         connect = rospy.ServiceProxy('connect', ConnectionCommand)
@@ -18,38 +20,39 @@ if __name__ == '__main__':
         print("Service call failed: %s" % e)
         sys.exit()
 
-    client = QueuingClient(action_name, action_class)
+    client = QueuingClient('move_joint_action')
+    queuing = True
+    clear = False
 
     while not rospy.is_shutdown():
-        goal = ActionLibrary.goal_classes[action_name]()
-        choice = input('a, b or r (switch queue or direct with q or d). e to exit')
-        if choice == 'a':
-            args = [(20, 20, 20, 0, 0, 0, 0), ('1', '2', '3', '4', '5', '6', '7')]
+        choice = raw_input('\nEnter one or more (space seperated) values to set joints 1, 2 and 3 to.\n(q=queue, d=direct, o=overried). e to exit\n')
 
-        elif choice == 'b':
-            args = [(-20, -20, -20, 0, 0, 0, 0), ('1', '2', '3', '4', '5', '6', '7')]
-
-        elif choice == 'r':
-            args = [(0, 0, 0, 0, 0, 0, 0), ('1', '2', '3', '4', '5', '6', '7')]
-
-        elif choice == 'q':
+        if choice == 'q':
             queuing = True
+            print('Queuing ON\n')
             continue
 
         elif choice == 'd':
             queuing = False
+            clear = False
+            print('Queuing OFF\n')
+            continue
+
+        elif choice == 'o':
+            queuing = False
+            clear = True
+            print('Override ON\n')
             continue
 
         elif choice == 'e':
             break
 
         else:
-            continue
-
-        for arg, inputted_arg in zip(ActionLibrary.action_goal_arguments[action_name], args):
-                    setattr(goal, arg[0], inputted_arg)
-
-        client.send_goal(goal, queuing)
+            list_of_vals = choice.split(' ')
+            for str_num in list_of_vals:
+                val = float(str_num)
+                goal = client.new_goal(position=(val, val, val, 0, 0, 0, 0))
+                client.send_goal(goal, queuing, clear)
 
 
 

@@ -92,7 +92,7 @@ move_tool = rospy.ServiceProxy('move_tool', MoveTool)
 
 x, y, z = 0.0, 200.0, 920.0
 orientation = [30.0, -20.0, -90.0]
-resp = move_tool(x=x, y=y, z=z, orientation=orientation, velocity=velocity, acceleration=acceleration)
+resp = move_tool(x=x, y=y, z=z, orientation=orientation, velocity=velocity[0], acceleration=acceleration[0])
 rospy.loginfo(resp.message)
 
 raw_input('Using service run_simple_path')
