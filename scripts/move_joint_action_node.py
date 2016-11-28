@@ -20,10 +20,12 @@ if __name__ == '__main__':
         print("Service call failed: %s" % e)
         sys.exit()
 
+		#set up the client
     client = QueuingClient('move_joint_action')
     queuing = True
     clear = False
 
+		#loop to receive input and send as goals
     while not rospy.is_shutdown():
         choice = raw_input('\nEnter one or more (space seperated) values to set joints 1, 2 and 3 to.\n(q=queue, d=direct, o=overried). e to exit\n')
 
@@ -48,10 +50,16 @@ if __name__ == '__main__':
             break
 
         else:
+						#split up the goals
             list_of_vals = choice.split(' ')
+
             for str_num in list_of_vals:
                 val = float(str_num)
+
+								#create the new goal
                 goal = client.new_goal(position=(val, val, val, 0, 0, 0, 0))
+
+								#send with the appropriate flags
                 client.send_goal(goal, queuing, clear)
 
 

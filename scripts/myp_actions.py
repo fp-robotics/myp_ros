@@ -17,7 +17,9 @@ if PYTHON3:
 else:
     from Queue import Queue
 
-
+'''
+A Library Class facilitating the easy use of the actions provided by myp_ros
+'''
 class ActionLibrary:
     actions = {}
     goals = {}
@@ -72,29 +74,36 @@ class QueuingClient:
         self.client.wait_for_server()
         rospy.loginfo('connected!')
 
+		# Sends the goal at the end of the queue or at the start, optionally clearing the rest
     def send_goal(self, goal, queue=False, clear=False, feedback_cb=None):
         if queue:
+						#short pause to allow for transition
             rospy.sleep(0.1)
+
+						#If no goal is active, immediately send, otherwise queue it
             if self.client.get_state() != GoalStatus.ACTIVE:
-                print("free")
                 self.client.send_goal(goal, done_cb=self.done_cb, feedback_cb=feedback_cb)
             else:
                 self.goal_queue.put((goal, feedback_cb))
 
+				#send goal and remove others
         elif clear:
             self.client.send_goal(goal, done_cb=self.clear, feedback_cb=feedback_cb)
 
+				#send goal and continue to others
         else:
             self.client.send_goal(goal, done_cb=self.done_cb, feedback_cb=feedback_cb)
-
+		# progresses along the queue
     def done_cb(self, terminal_state, result):
         if not self.goal_queue.empty():
             goal, feedback_cb = self.goal_queue.get()
             self.client.send_goal(goal, done_cb=self.done_cb, feedback_cb=feedback_cb)
 
+		#provides a new goal
     def new_goal(self, *args, **kwargs):
         return ActionLibrary.get_goal_class(self.action_name)(*args, **kwargs)
 
+		#clears the goal queue
     def clear(self, terminal_state, result):
         with self.goal_queue.mutex:
             self.goal_queue.queue.clear()
