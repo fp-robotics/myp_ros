@@ -1,6 +1,6 @@
 string pose_name
-float64 velocity #optional
-float64 acceleration #optional
-bool not_block #optional
+float64 velocity
+float64 acceleration
+bool not_block
 ---
 string message

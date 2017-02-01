@@ -68,4 +68,6 @@ if __name__ == '__main__':
                 goal = client.new_goal(posture=Posture(xyz=vals[:3], orientation=vals[3:6], orientation_type='Eular'), velocity=80)
 
 								#send with the appropriate flags
-                client.send_goal(goal, queuing, clear, feedback_cb=print_out)
+                client.send_goal(goal, queuing, clear)
+                if (raw_input() == 'c'):
+                    client.cancel_goal()

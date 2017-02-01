@@ -73,6 +73,7 @@ add_service_files(
 	PlayPath.srv
 	ReadGripperAngle.srv
 	ReadTcpPose.srv
+    ReleaseMode.srv
 	RecognizeObject.srv
 	RemoveSensor.srv
 	RunSimplePath.srv
