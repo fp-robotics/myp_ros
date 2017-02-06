@@ -64,6 +64,7 @@ add_service_files(
 	AddSensor.srv
 	CloseGripper.srv
 	ConnectionCommand.srv
+    Empty.srv
 	GetSensors.srv
 	MoveJoint.srv
 	MoveLinearAxis.srv
@@ -71,6 +72,7 @@ add_service_files(
 	MoveToPose.srv
 	OpenGripper.srv
 	PlayPath.srv
+    PlayToolPVT.srv
 	ReadGripperAngle.srv
 	ReadTcpPose.srv
     ReleaseMode.srv

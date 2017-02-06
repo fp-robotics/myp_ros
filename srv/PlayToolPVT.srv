@@ -1,0 +1,6 @@
+#request
+Posture[] trajectory
+JointAngles demo_initial
+bool move_to_initial_position
+---
+string message
