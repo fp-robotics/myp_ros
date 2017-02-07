@@ -49,7 +49,7 @@ class JoystickController:
 		self.scale = 1.0
 
 		self.move_joint(actuator_ids=['1', '2', '3', '4', '5', '6'], 
-				   position=[0]*6, velocity = [80]*6, acceleration = [80]*6)
+				   position=[0]*6, velocity = 80., acceleration = 80.)
 
 		self.update_pos = 	reset_pos = MoveToolRequest(189.0, 0.0, 1189.5,  [0.0, 0.0, 0.0], [80]*6, [80]*6, False, False, '')
 		self.last_good = deepcopy(self.update_pos)

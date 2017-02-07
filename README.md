@@ -22,6 +22,14 @@ $ export ROS_MASTER_URI=http://<PROB_IP>:11311
 
 Where <PROB_IP> is the IP address of your PRob. To test this connection, make sure there is no roscore running locally on your machine and check for available services with:
 
+In some system, you might need to manually the ROS_IP using
+```sh
+$ export ROS_IP=<YOUR_IP>
+```
+
+To see your IP you can use the command: `hostname -I`
+
+
 ```sh
 $ rosservice list
 ```
