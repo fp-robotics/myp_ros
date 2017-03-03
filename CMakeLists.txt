@@ -146,30 +146,49 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
+  ${PROJECT_SOURCE_DIR}/include
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-# add_library(client_pkg
-#   src/${PROJECT_NAME}/client_pkg.cpp
-# )
+set(HEADER_FILES ${PROJECT_SOURCE_DIR}/include/ExampleClass.h)
 
+## Declare a C++ library
+add_library(ExampleClass
+  src/ExampleClass.cpp
+  ${HEADER_FILES}
+)
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(client_pkg ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTE$
+add_dependencies(ExampleClass ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(client_pkg_node src/client_pkg_node.cpp)
+## With catkin_make all packages are built within a single CMake context
+## The recommended prefix ensures that target names across packages don't collide
+add_executable(example_all_in_one src/example_all_in_one.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(client_pkg_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX$
+add_dependencies(example_all_in_one ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(client_pkg_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(example_all_in_one
+  ${catkin_LIBRARIES}
+)
+
+## Declare a C++ executable
+## With catkin_make all packages are built within a single CMake context
+## The recommended prefix ensures that target names across packages don't collide
+add_executable(example_include src/example_include.cpp)
+
+## Add cmake target dependencies of the executable
+## same as for the library above
+add_dependencies(example_include ExampleClass ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(example_include
+  ExampleClass ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
