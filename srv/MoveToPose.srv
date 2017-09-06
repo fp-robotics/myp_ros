@@ -1,6 +1,0 @@
-string pose_name
-float64 velocity
-float64 acceleration
-bool not_block
----
-string message

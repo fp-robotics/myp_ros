@@ -1,0 +1,2 @@
+JointState[] trajectory
+bool durations
