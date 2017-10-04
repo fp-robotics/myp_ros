@@ -67,6 +67,7 @@ add_message_files(
 add_service_files(
   FILES
     Generic_myP_Service.srv
+    InformationPoolGet.srv
 )
 
 ## Generate actions in the 'action' folder
