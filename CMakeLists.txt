@@ -68,6 +68,7 @@ add_service_files(
   FILES
     Generic_myP_Service.srv
     InformationPoolGet.srv
+    Reconfigure.srv
 )
 
 ## Generate actions in the 'action' folder
