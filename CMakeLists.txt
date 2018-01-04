@@ -4,12 +4,14 @@ project(myp_ros)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  rospy
-  std_msgs
-  message_generation
-  actionlib_msgs
+find_package(
+  catkin REQUIRED COMPONENTS
+    roscpp
+    rospy
+    message_generation
+    actionlib_msgs
+    geometry_msgs
+    std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -48,57 +50,41 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  JointAngles.msg
-  Current.msg
-  Pose.msg
-  Posture.msg
-  SensorData.msg
-  SensorPacket.msg
-  DigitalInputs.msg
-  SensorInfo.msg
+    DigitalInputOutput.msg
+    FaultStatusMsg.msg
+    JointCurrent.msg
+    JointPosition.msg
+    JointVelocity.msg
+    NauticalAngles.msg
+    Point.msg
+    Pose.msg
+    PoseAlternative.msg
+    Sensors.msg
+    SensorInfo.msg
 )
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-	AddSensor.srv
-	CloseGripper.srv
-	ConnectionCommand.srv
-    Empty.srv
-	GetSensors.srv
-	MoveJoint.srv
-	MoveLinearAxis.srv
-	MoveTool.srv
-	MoveToPose.srv
-	OpenGripper.srv
-	PlayPath.srv
-    PlayToolPVT.srv
-	ReadGripperAngle.srv
-	ReadTcpPose.srv
-    ReleaseMode.srv
-	RecognizeObject.srv
-	RemoveSensor.srv
-	RunSimplePath.srv
-	Say.srv
-	SendSensorInstruction.srv
-	WaitForMotor.srv
-	Wait.srv
-	WriteDigitalOutputs.srv
+    Generic_myP_Service.srv
+    InformationPoolGet.srv
+    Reconfigure.srv
 )
 
-
 ## Generate actions in the 'action' folder
-add_action_files(
-  FILES
-  MoveToJointReference.action
-  MoveToToolReference.action
- )
+# add_action_files(
+#   FILES
+#     ...
+#     ...
+# )
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  actionlib_msgs
-  std_msgs  # Or other packages containing msgs
+    actionlib_msgs
+    geometry_msgs
+    std_msgs
+    # Or other packages containing msgs
 )
 
 ################################################
@@ -130,12 +116,17 @@ generate_messages(
 ## LIBRARIES: libraries you create in this project that dependent projects also$
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also ne$
-catkin_package(
+# Examples:
 #  INCLUDE_DIRS include
-#  LIBRARIES client_pkg
+#  LIBRARIES myp_ros
 #  CATKIN_DEPENDS roscpp rospy
 #  DEPENDS system_lib
-  CATKIN_DEPENDS message_runtime actionlib_msgs
+catkin_package(
+  CATKIN_DEPENDS
+    message_runtime
+    actionlib_msgs
+    geometry_msgs
+    std_msgs
 )
 
 ###########
@@ -146,49 +137,30 @@ catkin_package(
 ## Your package locations should be listed before other locations
 # include_directories(include)
 include_directories(
-  ${PROJECT_SOURCE_DIR}/include
   ${catkin_INCLUDE_DIRS}
 )
 
-set(HEADER_FILES ${PROJECT_SOURCE_DIR}/include/ExampleClass.h)
-
 ## Declare a C++ library
-add_library(ExampleClass
-  src/ExampleClass.cpp
-  ${HEADER_FILES}
-)
+# add_library(myp_ros
+#   src/${PROJECT_NAME}/myp_ros.cpp
+# )
+
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-add_dependencies(ExampleClass ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(myp_ros ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTE$
 
 ## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
-add_executable(example_all_in_one src/example_all_in_one.cpp)
+# add_executable(myp_ros_node src/myp_ros_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(example_all_in_one ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(myp_ros_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX$
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(example_all_in_one
-  ${catkin_LIBRARIES}
-)
-
-## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
-add_executable(example_include src/example_include.cpp)
-
-## Add cmake target dependencies of the executable
-## same as for the library above
-add_dependencies(example_include ExampleClass ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-## Specify libraries to link a library or executable target against
-target_link_libraries(example_include
-  ExampleClass ${catkin_LIBRARIES}
-)
+# target_link_libraries(myp_ros_node
+#   ${catkin_LIBRARIES}
+# )
 
 #############
 ## Install ##
@@ -205,7 +177,7 @@ target_link_libraries(example_include
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS client_pkg client_pkg_node
+# install(TARGETS myp_ros myp_ros_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -226,7 +198,7 @@ target_link_libraries(example_include
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS client_pkg client_pkg_node
+# install(TARGETS myp_ros myp_ros_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -251,7 +223,7 @@ target_link_libraries(example_include
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_client_pkg.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_myp_ros.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
