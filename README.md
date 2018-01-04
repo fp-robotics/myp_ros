@@ -1,4 +1,4 @@
-# ROS Package for myP 1.3 (in development)
+# ROS Package for myP 1.3
 
 
 ### Overview
