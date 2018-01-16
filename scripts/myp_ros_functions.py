@@ -60,7 +60,7 @@ _script_function_services = ['move_joint', 'move_tool', 'move_to_pose', 'play_pa
 # Here is a list of control functions available as ROS services:
 _control_function_services = ['connect', 'calibrate', 'disconnect', 'get_status', 'pause', 'resume',
                               'stop', 'recover', 'release', 'hold', 'initialize_application',
-                              'finalize_application', 'wait_for_info_from_myP', 'send_info_to_myP']
+                              'finalize_application']
 
 
 class ROSRobotError(Exception):
