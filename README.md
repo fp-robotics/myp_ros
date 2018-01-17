@@ -107,12 +107,13 @@ $ rosservice call /PRob2R/get_status ""
 $ rosservice call /PRob2R/connect ""
 $ rosservice call /PRob2R/calibrate ""
 # Now the robot is ready to execute myP applications.
+# Let's use an application with 'move_joint' command with different input formats:
 $ rosservice call /PRob2R/initialize_application ""
-$ rosservice call /PRob2R/move_joint "[5, 6] position=90"
+$ rosservice call /PRob2R/move_joint "'{\"actuator_ids\": [5, 6], \"position\": 90, \"velocity\": 20}'"
 $ rosservice call /PRob2R/open_gripper ""
-$ rosservice call /PRob2R/move_joint "[5, 6] position=-90"
+$ rosservice call /PRob2R/move_joint "'[[5, 6], -90, 20]'"
 $ rosservice call /PRob2R/close_gripper ""
-$ rosservice call /PRob2R/move_joint "[5, 6] position=0"
+$ rosservice call /PRob2R/move_joint "'[5, 6] 0 velocity=20'"
 $ rosservice call /PRob2R/finalize_application ""
 # Now the first application is done, let's move the robot manually ...
 $ rosservice call /PRob2R/release ""
