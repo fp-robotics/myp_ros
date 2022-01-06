@@ -50,8 +50,8 @@ find_package(
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-    AnalogInputOutput.msg
-    DigitalInputOutput.msg
+    AnalogIO.msg
+    DigitalIO.msg
     FaultStatusMsg.msg
     JointCurrent.msg
     JointPosition.msg
